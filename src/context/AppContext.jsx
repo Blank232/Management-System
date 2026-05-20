@@ -41,7 +41,7 @@ export const AppProvider = ({ children }) => {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error("Error signing in with Google", error);
-      setAuthError("Failed to sign in. Please try again.");
+      setAuthError(`Failed to sign in: ${error.code || error.message}`);
     }
   };
 
