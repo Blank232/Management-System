@@ -94,7 +94,7 @@ export default function CalendarView() {
             <div
               className={`text-[11px] absolute bottom-1 left-1 z-10 font-bold tracking-tight ${dayNet > 0 ? "text-emerald-400" : "text-rose-400"}`}
             >
-              {dayNet > 0 ? "+" : "-"}${Math.abs(dayNet).toFixed(0)}
+              {dayNet > 0 ? "+" : "-"}₹{Math.abs(dayNet).toFixed(0)}
             </div>
           )}
         </div>,

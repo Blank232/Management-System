@@ -127,7 +127,7 @@ export default function ExpenseManager() {
           <span
             className={`font-bold text-base md:text-xl ${rolloverBalance >= 0 ? "text-slate-200" : "text-rose-500"}`}
           >
-            ${rolloverBalance.toFixed(2)}
+            ₹{rolloverBalance.toFixed(2)}
           </span>
         </div>
         <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center text-center">
@@ -135,7 +135,7 @@ export default function ExpenseManager() {
             Income
           </span>
           <span className="text-emerald-400 font-bold text-base md:text-xl flex items-center gap-1">
-            <TrendingUp size={16} /> ${totalIncome.toFixed(2)}
+            <TrendingUp size={16} /> ₹{totalIncome.toFixed(2)}
           </span>
         </div>
         <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center text-center">
@@ -143,7 +143,7 @@ export default function ExpenseManager() {
             Spent
           </span>
           <span className="text-rose-400 font-bold text-base md:text-xl flex items-center gap-1">
-            <TrendingDown size={16} /> ${totalExpense.toFixed(2)}
+            <TrendingDown size={16} /> ₹{totalExpense.toFixed(2)}
           </span>
         </div>
         <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center text-center">
@@ -153,7 +153,7 @@ export default function ExpenseManager() {
           <span
             className={`font-bold text-base md:text-xl ${balance >= 0 ? "text-cyan-400" : "text-rose-500"}`}
           >
-            ${balance.toFixed(2)}
+            ₹{balance.toFixed(2)}
           </span>
         </div>
       </div>
@@ -161,7 +161,7 @@ export default function ExpenseManager() {
       {/* Overspending Warning */}
       {balance < 0 && (
         <div className="bg-rose-500/10 border border-rose-500/50 text-rose-300 px-4 py-3 rounded-xl mb-8 font-medium text-sm text-center shadow-sm">
-          Warning: You have overspent your earnings by $
+          Warning: You have overspent your earnings by ₹
           {Math.abs(balance).toFixed(2)}!
         </div>
       )}
@@ -315,7 +315,7 @@ export default function ExpenseManager() {
                   <span
                     className={`font-bold text-lg ${t.type === "income" ? "text-emerald-400" : "text-slate-200"}`}
                   >
-                    {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
+                    {t.type === "income" ? "+" : "-"}₹{t.amount.toFixed(2)}
                   </span>
                   <button
                     onClick={() => handleDeleteTransaction(t.id)}

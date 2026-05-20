@@ -362,7 +362,7 @@ export default function DailyView() {
                 <span
                   className={`font-bold ${t.type === "income" ? "text-emerald-400" : "text-slate-200"}`}
                 >
-                  {t.type === "income" ? "+" : "-"}${t.amount.toFixed(2)}
+                  {t.type === "income" ? "+" : "-"}₹{t.amount.toFixed(2)}
                 </span>
                 <button
                   onClick={() => handleDeleteTransaction(t.id)}
