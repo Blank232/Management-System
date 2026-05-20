@@ -6,15 +6,17 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
-import { Calendar as CalendarIcon, PieChart } from "lucide-react";
-import { AppProvider } from "./context/AppContext";
+import { Calendar as CalendarIcon, PieChart, LogOut } from "lucide-react";
+import { AppProvider, useAppContext } from "./context/AppContext";
 
 import CalendarView from "./pages/CalendarView.jsx";
 import DailyView from "./pages/DailyView.jsx";
 import ExpenseManager from "./pages/ExpenseManager.jsx";
+import Login from "./pages/Login.jsx";
 
 const BottomNav = () => {
   const location = useLocation();
+  const { logout } = useAppContext();
   // Don't show bottom nav on the daily view, we want that to be full screen
   if (location.pathname.startsWith("/day/")) return null;
 
@@ -34,6 +36,38 @@ const BottomNav = () => {
         <PieChart size={24} />
         <span className="text-xs mt-1">Expenses</span>
       </Link>
+      <button
+        onClick={logout}
+        className="flex flex-col items-center transition-colors text-slate-500 hover:text-rose-400"
+      >
+        <LogOut size={24} />
+        <span className="text-xs mt-1">Logout</span>
+      </button>
+    </div>
+  );
+};
+
+const MainRoutes = () => {
+  const { user, loadingAuth } = useAppContext();
+
+  if (loadingAuth) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-cyan-400 font-bold text-lg animate-pulse">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!user) return <Login />;
+
+  return (
+    <div className="min-h-screen bg-slate-950 pb-16 font-sans text-slate-100">
+      <Routes>
+        <Route path="/" element={<CalendarView />} />
+        <Route path="/day/:date" element={<DailyView />} />
+        <Route path="/expenses" element={<ExpenseManager />} />
+      </Routes>
+      <BottomNav />
     </div>
   );
 };
@@ -42,14 +76,7 @@ export default function App() {
   return (
     <AppProvider>
       <BrowserRouter>
-        <div className="min-h-screen bg-slate-950 pb-16 font-sans text-slate-100">
-          <Routes>
-            <Route path="/" element={<CalendarView />} />
-            <Route path="/day/:date" element={<DailyView />} />
-            <Route path="/expenses" element={<ExpenseManager />} />
-          </Routes>
-          <BottomNav />
-        </div>
+        <MainRoutes />
       </BrowserRouter>
     </AppProvider>
   );
