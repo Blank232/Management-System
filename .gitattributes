@@ -1,0 +1,14 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+# This will handle text files automatically and leave binary files alone.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.js text
+*.jsx text
+*.html text
+*.css text
+*.json text
+*.md text
+*.gitignore text
+*.config.js text

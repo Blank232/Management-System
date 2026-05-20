@@ -12,7 +12,11 @@ import {
 } from "recharts";
 
 export default function ExpenseManager() {
-  const { transactions = [], setTransactions } = useAppContext();
+  const {
+    transactions = [],
+    addTransaction,
+    deleteTransaction,
+  } = useAppContext();
 
   const [type, setType] = useState("expense"); // 'income' | 'expense'
   const [amount, setAmount] = useState("");
@@ -43,13 +47,12 @@ export default function ExpenseManager() {
     "#a3e635", // lime
   ];
 
-  const handleAddTransaction = (e) => {
+  const handleAddTransaction = async (e) => {
     e.preventDefault();
     const parsedAmount = parseFloat(amount);
     if (!parsedAmount || isNaN(parsedAmount) || parsedAmount <= 0) return;
 
     const newTransaction = {
-      id: `txn-${Date.now()}`,
       type,
       amount: parsedAmount,
       date,
@@ -57,18 +60,12 @@ export default function ExpenseManager() {
       note: note.trim(),
     };
 
-    setTransactions((prev) =>
-      [newTransaction, ...prev].sort(
-        (a, b) => new Date(b.date) - new Date(a.date),
-      ),
-    );
+    await addTransaction(newTransaction);
     setAmount("");
     setNote("");
   };
 
-  const handleDeleteTransaction = (id) => {
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
-  };
+  const handleDeleteTransaction = (id) => deleteTransaction(id);
 
   // Calculate Totals
   const previousTransactions = transactions.filter(

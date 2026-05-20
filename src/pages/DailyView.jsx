@@ -9,13 +9,15 @@ export default function DailyView() {
   const navigate = useNavigate();
   const {
     tasks,
-    setTasks,
+    addTask,
+    deleteTask,
     taskLogs,
-    setTaskLogs,
+    updateTaskLogs,
     notes,
-    setNotes,
+    updateNotes,
     transactions = [],
-    setTransactions,
+    addTransaction,
+    deleteTransaction,
   } = useAppContext();
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -58,39 +60,35 @@ export default function DailyView() {
   const dailyLogs = taskLogs[date] || {};
 
   const toggleTask = (taskId) => {
-    setTaskLogs((prev) => ({
-      ...prev,
+    updateTaskLogs({
+      ...taskLogs,
       [date]: {
-        ...prev[date],
-        [taskId]: !prev[date]?.[taskId],
+        ...taskLogs[date],
+        [taskId]: !taskLogs[date]?.[taskId],
       },
-    }));
-  };
-
-  const handleNoteChange = (e) => {
-    setNotes((prev) => ({
-      ...prev,
-      [date]: e.target.value,
-    }));
-  };
-
-  const handleDeleteTask = (taskIdToDelete) => {
-    setTasks((prevTasks) =>
-      prevTasks.filter((task) => task.id !== taskIdToDelete),
-    );
-    // Also clean up logs for this task for data hygiene
-    setTaskLogs((prevLogs) => {
-      const newLogs = { ...prevLogs };
-      for (const logDate in newLogs) {
-        if (newLogs[logDate][taskIdToDelete]) {
-          delete newLogs[logDate][taskIdToDelete];
-        }
-      }
-      return newLogs;
     });
   };
 
-  const handleAddTask = (e) => {
+  const handleNoteChange = (e) => {
+    updateNotes({
+      ...notes,
+      [date]: e.target.value,
+    });
+  };
+
+  const handleDeleteTask = async (taskIdToDelete) => {
+    await deleteTask(taskIdToDelete);
+    // Also clean up logs for this task for data hygiene
+    const newLogs = { ...taskLogs };
+    for (const logDate in newLogs) {
+      if (newLogs[logDate]?.[taskIdToDelete]) {
+        delete newLogs[logDate][taskIdToDelete];
+      }
+    }
+    await updateTaskLogs(newLogs);
+  };
+
+  const handleAddTask = async (e) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
@@ -116,20 +114,19 @@ export default function DailyView() {
       }
     }
 
-    setTasks((prev) => [...prev, newTask]);
+    await addTask(newTask);
     setNewTaskTitle("");
   };
 
   // Filter transactions for this specific day
   const todaysTransactions = transactions.filter((t) => t.date === date);
 
-  const handleAddTransaction = (e) => {
+  const handleAddTransaction = async (e) => {
     e.preventDefault();
     const parsedAmount = parseFloat(txnAmount);
     if (!parsedAmount || isNaN(parsedAmount) || parsedAmount <= 0) return;
 
     const newTransaction = {
-      id: `txn-${Date.now()}`,
       type: txnType,
       amount: parsedAmount,
       date,
@@ -137,17 +134,13 @@ export default function DailyView() {
       note: txnNote.trim(),
     };
 
-    setTransactions((prev) =>
-      [newTransaction, ...prev].sort(
-        (a, b) => new Date(b.date) - new Date(a.date),
-      ),
-    );
+    await addTransaction(newTransaction);
     setTxnAmount("");
     setTxnNote("");
   };
 
   const handleDeleteTransaction = (id) => {
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
+    deleteTransaction(id);
   };
 
   const todayTasks = tasks.filter(
