@@ -3,7 +3,7 @@ import { useAppContext } from "../context/AppContext";
 import { LogIn } from "lucide-react";
 
 export default function Login() {
-  const { signInWithGoogle } = useAppContext();
+  const { signInWithGoogle, authError } = useAppContext();
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
@@ -27,6 +27,12 @@ export default function Login() {
           />
           Sign in with Google
         </button>
+
+        {authError && (
+          <div className="mt-4 text-sm text-rose-400 bg-rose-500/10 p-3 rounded-lg border border-rose-500/30">
+            {authError}
+          </div>
+        )}
       </div>
     </div>
   );

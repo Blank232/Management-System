@@ -19,6 +19,7 @@ export const useAppContext = () => useContext(AppContext);
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
+  const [authError, setAuthError] = useState(null);
 
   const [transactions, setTransactions] = useState([]);
   const [notes, setNotes] = useState({});
@@ -36,15 +37,18 @@ export const AppProvider = ({ children }) => {
 
   const signInWithGoogle = async () => {
     try {
+      setAuthError(null);
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error("Error signing in with Google", error);
+      setAuthError("Failed to sign in. Please try again.");
     }
   };
 
   const logout = async () => {
     try {
       await signOut(auth);
+      setAuthError(null);
     } catch (error) {
       console.error("Error signing out", error);
     }
@@ -54,6 +58,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     if (!user) {
       // Clear data on logout
+      setAuthError(null);
       setTransactions([]);
       setTasks([]);
       setTaskLogs({});
@@ -154,6 +159,7 @@ export const AppProvider = ({ children }) => {
   const value = {
     user,
     loadingAuth,
+    authError,
     signInWithGoogle,
     logout,
     transactions,
